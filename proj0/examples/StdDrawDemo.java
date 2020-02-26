@@ -1,4 +1,4 @@
-/* 
+package examples;/*
  *
  * Make sure to see the more detailed description of
  * StdDraw at: http://introcs.cs.princeton.edu/java/15inout/ 
@@ -8,6 +8,9 @@
  * Or you can see the full documentation at:
  *   http://introcs.cs.princeton.edu/java/15inout/javadoc/StdDraw.html
  */
+
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class StdDrawDemo {
 	public static String imageToDraw = "advice.png";
