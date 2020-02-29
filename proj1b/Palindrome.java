@@ -65,7 +65,7 @@ public class Palindrome {
         if (lld.size() < 2) {
             return true;
         }
-        if (!cc.equalChars(lld.removeFirst(),lld.removeLast())) {
+        if (!cc.equalChars(lld.removeFirst(), lld.removeLast())) {
             return false;
         }
         return isPalindrome(lld, cc);

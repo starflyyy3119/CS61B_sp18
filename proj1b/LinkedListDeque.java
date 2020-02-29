@@ -2,7 +2,7 @@
  * Double ended queues which are sequence containers with dynamic sizes
  * that can be expanded or contracted on both ends
  */
-public class LinkedListDeque<T> implements Deque<T>{
+public class LinkedListDeque<T> implements Deque<T> {
     private static class Node<T> {
         T item;
         Node<T> next;

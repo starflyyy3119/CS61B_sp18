@@ -3,7 +3,7 @@
  * This implementation gets an inspiration from
  * @source https://www.cnblogs.com/xzxl/p/8643448.html
  */
-public class ArrayDeque<T> implements Deque<T>{
+public class ArrayDeque<T> implements Deque<T> {
     /* array is empty: front == last */
 
     /* number of items in the array: (last - front) mod array.length */
