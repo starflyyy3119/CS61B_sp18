@@ -2,7 +2,7 @@
  * Double ended queues which are sequence containers with dynamic sizes
  * that can be expanded or contracted on both ends
  */
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Deque<T>{
     private static class Node<T> {
         T item;
         Node<T> next;
@@ -35,6 +35,7 @@ public class LinkedListDeque<T> {
      * Adds an item of type T to the front of the deque
      * @param item that needs to be added
      */
+    @Override
     public void addFirst(T item) {
         /* Now first node in the deque */
         Node<T> first = sentinel.next;
@@ -48,6 +49,7 @@ public class LinkedListDeque<T> {
      * Adds an item of type T to the back of the deque
      * @param item that needs to be added
      */
+    @Override
     public void addLast(T item) {
         /* Now last node in the deque */
         Node<T> last = sentinel.prev;
@@ -61,6 +63,7 @@ public class LinkedListDeque<T> {
      * Check whether or not the deque is empty
      * @return true if deque is empty, false otherwise
      */
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
@@ -69,12 +72,14 @@ public class LinkedListDeque<T> {
      * The size of the items
      * @return the item number in the deque
      */
+    @Override
     public int size() {
         return size;
     }
     /**
      * Prints the items in the deque from first to last, separated by a space
      */
+    @Override
     public void printDeque() {
         Node<T> p = sentinel.next;
         while (p != sentinel) {
@@ -88,6 +93,7 @@ public class LinkedListDeque<T> {
      * Removes the first item of the deque
      * @return the first item, if no such item, return null
      */
+    @Override
     public T removeFirst() {
         if (isEmpty()) {
             return null;
@@ -108,6 +114,7 @@ public class LinkedListDeque<T> {
      * Removes the last item of the deque
      * @return the last item, if no such item, return null
      */
+    @Override
     public T removeLast() {
         if (isEmpty()) {
             return null;
@@ -129,6 +136,7 @@ public class LinkedListDeque<T> {
      * @param index the specific index
      * @return the index's item in the deque
      */
+    @Override
     public T get(int index) {
         Node<T> p = sentinel.next;
         for (int i = 0; i < index; i++) {

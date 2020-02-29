@@ -3,7 +3,7 @@
  * This implementation gets an inspiration from
  * @source https://www.cnblogs.com/xzxl/p/8643448.html
  */
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Deque<T>{
     /* array is empty: front == last */
 
     /* number of items in the array: (last - front) mod array.length */
@@ -36,10 +36,11 @@ public class ArrayDeque<T> {
         return (cast(last + 1) == front);
     }
 
+    @Override
     public boolean isEmpty() {
         return front == last;
     }
-
+    @Override
     public int size() {
         return cast(last - front);
     }
@@ -61,6 +62,7 @@ public class ArrayDeque<T> {
         last = size;
     }
 
+    @Override
     public void addFirst(T item) {
         if (isFull()) {
             resize(array.length * 2);
@@ -75,6 +77,7 @@ public class ArrayDeque<T> {
 
     }
 
+    @Override
     public void addLast(T item) {
         if (isFull()) {
             resize(array.length * 2);
@@ -84,6 +87,7 @@ public class ArrayDeque<T> {
         last = cast(last + 1);
     }
 
+    @Override
     public T removeFirst() {
         if (isEmpty()) {
             return null;
@@ -100,6 +104,7 @@ public class ArrayDeque<T> {
         return item;
     }
 
+    @Override
     public T removeLast() {
         if (isEmpty()) {
             return null;
@@ -116,10 +121,12 @@ public class ArrayDeque<T> {
         return item;
     }
 
+    @Override
     public T get(int index) {
         return array[cast(index + front)];
     }
 
+    @Override
     public void printDeque() {
         int size = size();
         for (int i = 0; i < size; i++) {
