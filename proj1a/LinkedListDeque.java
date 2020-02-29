@@ -77,7 +77,7 @@ public class LinkedListDeque<T> {
      */
     public void printDeque() {
         Node<T> p = sentinel.next;
-        while(p != sentinel) {
+        while (p != sentinel) {
             StdOut.print(p.item + " ");
             p = p.next;
         }

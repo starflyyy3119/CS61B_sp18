@@ -75,6 +75,7 @@ public class ArrayDeque<T> {
 
         if ((double) size / arrayList.length < 0.25) {
             resize(arrayList.length / 2);
+            last = last + 1;
         }
         return item;
     }
@@ -87,6 +88,7 @@ public class ArrayDeque<T> {
 
         if ((double) size / arrayList.length < 0.25) {
             resize(arrayList.length / 2);
+            last = last + 1;
         }
         return item;
     }
