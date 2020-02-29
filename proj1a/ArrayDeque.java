@@ -68,6 +68,7 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst() {
+        if (size == 0) return null;
         front = (front + 1) % arrayList.length;
         T item = arrayList[front];
         arrayList[front] = null;
@@ -81,6 +82,7 @@ public class ArrayDeque<T> {
     }
 
     public T removeLast() {
+        if (size == 0) return null;
         last = Math.floorMod(last - 1, arrayList.length);
         T item = arrayList[last];
         arrayList[last] = null;
