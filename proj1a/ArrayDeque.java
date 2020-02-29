@@ -18,7 +18,9 @@ public class ArrayDeque<T> {
 
     public void addFirst(T item) {
         size = size + 1;
-        if (size == arrayList.length) resize(size * 2);
+        if (size == arrayList.length) {
+            resize(size * 2);
+        }
         arrayList[front] = item;
 
         front = Math.floorMod(front - 1, arrayList.length);
@@ -26,7 +28,9 @@ public class ArrayDeque<T> {
 
     public void addLast(T item) {
         size = size + 1;
-        if (size == arrayList.length) resize(size * 2);
+        if (size == arrayList.length) {
+            resize(size * 2);
+        }
         arrayList[last] = item;
 
         last = (last + 1) % arrayList.length;
@@ -36,7 +40,7 @@ public class ArrayDeque<T> {
         T[] array = (T[]) new Object[capacity];
         arrayCopy(arrayList, array, front + 1);
         front = array.length - 1;
-        last = size;
+        last = size - 1;
         arrayList = array;
     }
 
@@ -69,7 +73,9 @@ public class ArrayDeque<T> {
         arrayList[front] = null;
         size--;
 
-        if ((double)size / arrayList.length < 0.25) resize(arrayList.length / 2);
+        if ((double) size / arrayList.length < 0.25) {
+            resize(arrayList.length / 2);
+        }
         return item;
     }
 
@@ -79,7 +85,9 @@ public class ArrayDeque<T> {
         arrayList[last] = null;
         size--;
 
-        if ((double)size / arrayList.length < 0.25) resize(arrayList.length / 2);
+        if ((double) size / arrayList.length < 0.25) {
+            resize(arrayList.length / 2);
+        }
         return item;
     }
 
