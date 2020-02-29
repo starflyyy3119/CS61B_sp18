@@ -122,7 +122,7 @@ public class ArrayDeque<T> {
 
     public void printDeque() {
         int size = size();
-        for (int i = 0; i < size ; i++) {
+        for (int i = 0; i < size; i++) {
             StdOut.print(get(i) + " ");
         }
     }
