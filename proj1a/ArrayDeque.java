@@ -48,11 +48,13 @@ public class ArrayDeque<T> {
      * resize the array, and set front = 0, set last = size
      */
     private void resize(int capacity) {
-        if (capacity < 8) return;
+        if (capacity < 8) {
+            return;
+        }
         int size = size();
         T[] newArray = (T[]) new Object[capacity];
         for (int i = 0; i < size; i++) {
-            newArray[i] = array[i + front];
+            newArray[i] = get(i);
         }
         array = newArray;
         front = 0;
@@ -61,13 +63,12 @@ public class ArrayDeque<T> {
 
     public void addFirst(T item) {
         if (isFull()) {
-            resize(size() * 2);
+            resize(array.length * 2);
         }
         if (isEmpty()) {
             array[front] = item;
             last = cast(last + 1);
-        }
-        else { // !isEmpty()
+        } else { // !isEmpty()
             front = cast(front - 1);
             array[front] = item;
         }
@@ -76,7 +77,7 @@ public class ArrayDeque<T> {
 
     public void addLast(T item) {
         if (isFull()) {
-            resize(size() * 2);
+            resize(array.length * 2);
         }
 
         array[last] = item;
@@ -93,7 +94,7 @@ public class ArrayDeque<T> {
         front = cast(front + 1);
 
         if ((double) size() / array.length < 0.25) {
-            resize(size() / 2);
+            resize(array.length / 2);
         }
 
         return item;
@@ -109,7 +110,7 @@ public class ArrayDeque<T> {
         array[last] = null;
 
         if ((double) size() / array.length < 0.25) {
-            resize(size() / 2);
+            resize(array.length / 2);
         }
 
         return item;
@@ -117,5 +118,12 @@ public class ArrayDeque<T> {
 
     public T get(int index) {
         return array[cast(index + front)];
+    }
+
+    public void printDeque() {
+        int size = size();
+        for (int i = 0; i < size ; i++) {
+            StdOut.print(get(i) + " ");
+        }
     }
 }
