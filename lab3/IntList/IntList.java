@@ -103,14 +103,29 @@ public class IntList {
      * Returns the reverse of the given IntList.
      * This method is destructive. If given null as an input, returns null
      */
-    public static IntList reverse(IntList A) {
-        if (A == null) return null;
-        IntList B = new IntList(A.first, null);
-        while (A.rest != null) {
-            A = A.rest;
-            B = new IntList(A.first, B);
+    /*
+    public static IntList reverse(IntList M) {
+        if (M == null) return null;
+        IntList B = new IntList(M.first, null);
+        while (M.rest != null) {
+            M = M.rest;
+            B = new IntList(M.first, B);
         }
         return B;
+    }
+     */
+    // 上面的实现问题： 在我们运行的过程中，我们将 A 的地址传给 M，但是在过程中，我们并没有改变其中的值
+    // 所以，在测试中，我们的A依然是 （1,2,3,4），没有发生改变, 所以简单的做法是在first用完后，设成别的值。
+    public static IntList reverse(IntList M) {
+        if (M == null) return null;
+        IntList B = new IntList(M.first, null);
+        while (M.rest != null) {
+            M = M.rest;
+            B = new IntList(M.first, B);
+            M.first = 0;
+        }
+        return B;
+
     }
 
 
