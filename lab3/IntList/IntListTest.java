@@ -77,15 +77,17 @@ public class IntListTest {
         /* null input */
         assertNull(IntList.reverse(null));
 
-        IntList A = IntList.of(4, 5, 6);
+        IntList A = IntList.of(1, 2, 3, 4);
         IntList B = IntList.reverse(A);
 
         assertNotEquals(A, B);
 
-        IntList C = IntList.of(6, 5, 4);
-        assertEquals(C.first, B.first);
-        assertEquals(C.rest.first, B.rest.first);
-        assertEquals(C.rest.rest.first, B.rest.rest.first);
+        IntList C = IntList.of(4, 3, 2, 1);
+        while(C != null) {
+            assertEquals(C.first, B.first);
+            C = C.rest;
+            B = B.rest;
+        }
     }
 
 }
