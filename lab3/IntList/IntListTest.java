@@ -83,11 +83,8 @@ public class IntListTest {
         assertNotEquals(A, B);
 
         IntList C = IntList.of(4, 3, 2, 1);
-        while(C != null) {
-            assertEquals(C.first, B.first);
-            C = C.rest;
-            B = B.rest;
-        }
-    }
+        assertEquals(C, B);
 
+        assertEquals(IntList.reverse(C), A);
+    }
 }
