@@ -4,27 +4,27 @@ ArrayDeque:
 
 Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
 
-A: 
+A: No.
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: Use cast function to solve the circular index problem.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: No.
 
 Q: What did you learn by talking to your partner about writing ArrayDeque?
 
-A:
+A: 
 
 Q: What do you wish you would have known before writing ArrayDeque, if anything?
 
-A:
+A: % is actually not equal to mod in Java. For positive numbers, they are the same, but not negative numbers
 
 Q: If you wrote ArrayDeque again, what would you do differently, if anything?
 
-A:
+A: No
 
 -----
 
@@ -33,26 +33,40 @@ LinkedListDeque:
 Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
 
 A: 
+Can use less memory in addFirst addLast removeFirst & removeLast methods.
+public void addFirst(T item) {
+	sentinel.next = new Node<T>(item, sentinel.next, sentinel);
+	sentinel.next.next.prev = sentinel.next;
+	size++;
+}
+public T removeFirst() {
+	if (isEmpty) { return null }
+	T itemToRemove = sentinel.next.item;
+	sentinel.next.next.prev = sentinel;
+	sentinel.next = sentinel.next.next;
+	size --;
+	return itemToRemove;
+}
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: Generally, code is explicit.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: Use more memory than the above code.
 
 Q: What did you learn by talking to your partner about writing LinkedListDeque?
 
-A:
+A: Do not use extra memory to finish the methods.
 
 Q: What do you wish you would have known before writing LinkedListDeque, if anything?
 
-A:
+A: As above.
 
 Q: If you wrote LinkedListDeque again, what would you do differently, if anything?
 
-A:
+A: As above.
 
 -----
 
@@ -60,4 +74,4 @@ Meta:
 
 Q: Did you like this design review process? Anything we should do differently next time?
 
-A: 
+A: Yes.
