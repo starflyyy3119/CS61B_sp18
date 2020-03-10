@@ -13,7 +13,6 @@ import java.util.Random;
 *
  */
 public class RandomUtils {
-
     /**
      * Returns a random real number uniformly in [0, 1).
      *
