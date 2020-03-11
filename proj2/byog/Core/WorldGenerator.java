@@ -4,11 +4,9 @@ import byog.SaveDemo.World;
 import byog.TileEngine.Tileset;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import org.hamcrest.core.IsInstanceOf;
 
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Random;
-
+import java.util.*;
 
 
 /**
@@ -29,7 +27,9 @@ public class WorldGenerator {
     static final Point mapCenter = new Point(WorldGenerator.WIDTH / 2, WorldGenerator.HEIGHT / 2);
 
     /* queue is a priority queue and the room which is closed to the center of the map will be firstly expanded */
-    Queue<Room> queue = new PriorityQueue<>();
+    Queue<Room> queue = new PriorityQueue<>(Room.roomComparator());
+    Stack<Room> stack = new Stack<>();
+
     TETile[][] world;
     boolean[][] isOccupyChecker;
 
@@ -37,7 +37,7 @@ public class WorldGenerator {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
 
-        // initialize the worldaddRoomOccupied(left);
+        // initialize the world
         world = new TETile[WIDTH][HEIGHT];
         for (int x = 0; x < WIDTH; x += 1) {
             for (int y = 0; y < HEIGHT; y += 1) {
@@ -48,50 +48,74 @@ public class WorldGenerator {
         isOccupyChecker = new boolean[WIDTH][HEIGHT];
 
         // add the first room into the queue
-        queue.add(Room.roomGenerator(null, null));
+        Room firstRoom = Room.roomGenerator(null, null);
+        addRoom(stack, firstRoom);
 
         // dive into the priority queue based search algorithm
-        pQAlgorithm();
+        algorithm(stack);
+
+        // add the wall
+        addWall();
 
         ter.renderFrame(world);
     }
 
-    private void pQAlgorithm() {
+    private void algorithm(Collection<Room> container) {
         int cnt = 0;
-        while (!queue.isEmpty() && cnt < 30) {
-            Room nowRoom = queue.remove();
-            addRoom(nowRoom);
+        while (!container.isEmpty() && cnt < 15) {
+            Room nowRoom;
+            if (container instanceof Stack) {
+                Stack<Room> stack_tmp = (Stack<Room>) container;
+                nowRoom = stack_tmp.pop();
+            } else {  // container instanceof Queue
+                Queue<Room> queue_tmp = (Queue<Room>) container;
+                nowRoom = queue_tmp.remove();
+            }
+            drawRoom(nowRoom);
 
-            // expand to left
+            // expand to leftRoom.roomGenerator(null, null)
             Room left = Room.roomGenerator("left", nowRoom);
             if (!isOut(left) && !isOccupied(left)) {
-                queue.add(left);
-                addRoomOccupied(left);
+                addRoom(container, left);
+                HighWay highWay = HorizontalHighWay.hHWGenerator(left, nowRoom);
+                addHighWay(highWay);
             }
 
             // expand to right
             Room right = Room.roomGenerator("right", nowRoom);
             if (!isOut(right) && !isOccupied(right)) {
-                queue.add(right);
-                addRoomOccupied(right);
+                addRoom(container, right);
+                HighWay highWay = HorizontalHighWay.hHWGenerator(nowRoom, right);
+                addHighWay(highWay);
             }
 
             // expand to up
             Room up = Room.roomGenerator("up", nowRoom);
             if (!isOut(up) && !isOccupied(up)) {
-                queue.add(up);
-                addRoomOccupied(up);
+                addRoom(container, up);
+                HighWay highWay = VerticalHighWay.vHWGenerator(nowRoom, up);
+                addHighWay(highWay);
             }
 
             // expand to down
             Room down = Room.roomGenerator("down", nowRoom);
             if (!isOut(down) && !isOccupied(down)) {
-                queue.add(down);
-                addRoomOccupied(down);
+                addRoom(container, down);
+                HighWay highWay = VerticalHighWay.vHWGenerator(down, nowRoom);
+                addHighWay(highWay);
             }
 
             cnt++;
         }
+    }
+
+    /**
+     * Add a room into the container
+     * @param room needs to be added
+     */
+    private void addRoom(Collection<Room> container, Room room) {
+        container.add(room);
+        addRoomOccupied(room);
     }
 
     /**
@@ -112,8 +136,11 @@ public class WorldGenerator {
      * @return true if the room is contradicted with another one, otherwise false
      */
     private boolean isOccupied(Room room) {
-        for (int i = room.min.x - 1; i <= room.max.x + 1; i++) {
-            for (int j = room.min.y - 1; j <= room.max.y + 1; j++) {
+        // 2 means at least we should leave some space for walls
+        int xMin = Math.max(1, room.min.x - 2), xMax = Math.min(WIDTH - 2, room.max.x + 2);
+        int yMin = Math.max(1, room.min.y - 2), yMax = Math.min(HEIGHT - 2, room.max.y + 2);
+        for (int i = xMin; i <= xMax; i++) {
+            for (int j = yMin; j <= yMax; j++) {
                 if (isOccupyChecker[i][j]) {
                     return true;
                 }
@@ -128,16 +155,16 @@ public class WorldGenerator {
      * @return true if the room is out of the world, otherwise false
      */
     private boolean isOut(Room room) {
-        return room.min.x < 1 || room.max.x > WIDTH - 3 || room.min.y < 1 || room.max.y > WIDTH - 3;
+        return room.min.x < 1 || room.max.x > WIDTH - 3 || room.min.y < 1 || room.max.y > HEIGHT - 3;
     }
 
 
 
     /**
-     * Add a room in the world
+     * draw a room in the world
      * @param room is the Object to be added
      */
-    private void addRoom(Room room) {
+    private void drawRoom(Room room) {
         for (int i = room.min.x; i <= room.max.x; i++) {
             for (int j = room.min.y; j <= room.max.y; j++) {
                 world[i][j] = Tileset.FLOOR;
@@ -145,13 +172,37 @@ public class WorldGenerator {
         }
     }
 
+    private void addHighWay(HighWay highWay) {
+        highWay.addHighWay(world, isOccupyChecker);
+    }
+
     /**
      * Add Walls in the world
-     * @param world is the Object to be generated
-     * @param wall type of wall
      */
-    private static void addWall(TETile[][] world, TETile wall) {
+    private void addWall() {
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
+                drawWall(i, j);
+            }
+        }
     }
+
+    private void drawWall(int x, int y) {
+        if (world[x][y].equals(Tileset.FLOOR)) {
+            if (world[x-1][y].equals(Tileset.NOTHING)) { world[x-1][y] = Tileset.WALL; }
+            if (world[x+1][y].equals(Tileset.NOTHING)) { world[x+1][y] = Tileset.WALL; }
+            if (world[x][y-1].equals(Tileset.NOTHING)) { world[x][y-1] = Tileset.WALL; }
+            if (world[x][y+1].equals(Tileset.NOTHING)) { world[x][y+1] = Tileset.WALL; }
+
+            // four nooks
+            if (world[x-1][y-1].equals(Tileset.NOTHING)) { world[x-1][y-1] = Tileset.WALL; }
+            if (world[x-1][y+1].equals(Tileset.NOTHING)) { world[x-1][y+1] = Tileset.WALL; }
+            if (world[x+1][y-1].equals(Tileset.NOTHING)) { world[x+1][y-1] = Tileset.WALL; }
+            if (world[x+1][y+1].equals(Tileset.NOTHING)) { world[x+1][y+1] = Tileset.WALL; }
+        }
+    }
+
+
     public static void main(String[] args) {
         new WorldGenerator();
     }

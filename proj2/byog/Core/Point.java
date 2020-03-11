@@ -6,7 +6,7 @@ import java.util.Random;
  * Point can be accessed by the class in the same package
  */
 class Point {
-    static final int seed = 123;
+    static final int seed = 38284;
     public static final Random RANDOM = new Random(seed);
     int x;
     int y;

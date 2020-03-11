@@ -1,8 +1,10 @@
 package byog.Core;
 
-public class Room implements Comparable<Room>{
+import java.util.Comparator;
 
-    public final static int HALFMINROOMLENGTH = 1;
+public class Room {
+
+    public final static int HALFMINROOMLENGTH = 0;
     public final static int HALFMAXROOMLENGTH = 5;
 
     /**
@@ -19,26 +21,6 @@ public class Room implements Comparable<Room>{
         center = new Point(min.x + (max.x - min.x) / 2, min.y + (max.y - min.y) / 2);
     }
 
-    @Override
-    public int compareTo(Room o) {  // It seems that I should use comparator to pass into the priority queue, bug need to be fixed
-        return Integer.compare(Hamming(WorldGenerator.mapCenter, this.center), Hamming(WorldGenerator.mapCenter, o.center));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) { return false; }
-        if (o == this) { return true; }
-        if (o.getClass() != this.getClass()) { return false; }
-
-        Room that = (Room) o;
-        if (!this.min.equals(that.min)) { return false; }
-        return this.max.equals(that.max);
-    }
-
-    private int Hamming(Point a, Point b) {
-        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-    }
-
     /**
      * Generator a room near the nowRoom
      * @param s the direction choice, s == null means generate a brand new Room in the world
@@ -52,7 +34,8 @@ public class Room implements Comparable<Room>{
             center = Point.pointGenerator(HALFMAXROOMLENGTH + 1, WorldGenerator.WIDTH - HALFMAXROOMLENGTH - 1, HALFMAXROOMLENGTH + 1, WorldGenerator.HEIGHT - HALFMAXROOMLENGTH - 1);
             leftHalf = generateHalf(HALFMAXROOMLENGTH + 1);
             rightHalf = generateOneHalf(leftHalf, 1);
-            downHalf = generateHalf(HALFMAXROOMLENGTH + 1);
+            int bound = (Math.max(leftHalf, rightHalf) >= HALFMAXROOMLENGTH / 2) ? HALFMAXROOMLENGTH / 2 : HALFMAXROOMLENGTH;
+            downHalf = generateHalf(bound + 1);
             upHalf = generateOneHalf(downHalf, 1);
             return new Room(new Point(center.x - leftHalf, center.y - downHalf), new Point(center.x + rightHalf, center.y + upHalf));
         }
@@ -60,27 +43,33 @@ public class Room implements Comparable<Room>{
         Point max = nowRoom.max;
         if (s.equals("left") || s.equals("right")) {
             if (s.equals("left")) {
-                center = Point.pointGenerator(min.x - 1 - HALFMAXROOMLENGTH, min.x - 1, min.y, max.y + 1);
-                rightHalf = generateHalf(min.x - center.x);
+                int centerRightBound = min.x - 2;
+                center = Point.pointGenerator(centerRightBound - 2 * HALFMAXROOMLENGTH, centerRightBound, min.y, max.y + 1);
+                rightHalf = generateHalf(Math.min(centerRightBound - center.x + 1, HALFMAXROOMLENGTH));
                 leftHalf = generateOneHalf(rightHalf, -1);
             } else { // s.equals("right")
-                center = Point.pointGenerator(max.x + 2, max.x + 1 + HALFMAXROOMLENGTH + 1, min.y, max.y + 1);
-                leftHalf = generateHalf(center.x - max.x);
+                int centerLeftBound = max.x + 2;
+                center = Point.pointGenerator(centerLeftBound + 1, centerLeftBound + 2 * HALFMAXROOMLENGTH + 1, min.y, max.y + 1);
+                leftHalf = generateHalf(Math.min(center.x - centerLeftBound + 1, HALFMAXROOMLENGTH));
                 rightHalf = generateOneHalf(leftHalf, 1);
             }
-            upHalf = generateHalf( HALFMAXROOMLENGTH + 1);
+            int bound = (Math.max(leftHalf, rightHalf) >= HALFMAXROOMLENGTH / 2) ? HALFMAXROOMLENGTH / 2 : HALFMAXROOMLENGTH;
+            upHalf = generateHalf(bound + 1);
             downHalf = generateOneHalf(upHalf, -1);
         } else {  // s.equals("up") || s.equals("down")
             if (s.equals("up")) {
-                center = Point.pointGenerator(min.x, max.x + 1, max.y + 2, max.y + 1 + HALFMAXROOMLENGTH + 1);
-                downHalf = generateHalf(center.y - max.y);
+                int centerLowerBound = max.y + 2;
+                center = Point.pointGenerator(min.x, max.x + 1, centerLowerBound + 1, centerLowerBound + 2 * HALFMAXROOMLENGTH + 1);
+                downHalf = generateHalf(Math.min(center.y - centerLowerBound + 1, HALFMAXROOMLENGTH));
                 upHalf = generateOneHalf(downHalf, 1);
             } else { // s.equals("down")
-                center = Point.pointGenerator(min.x, max.x + 1, min.y - 1 - HALFMAXROOMLENGTH, min.y - 1);
-                upHalf = generateHalf(min.y - center.y);
+                int centerUpperBound = min.y - 2;
+                center = Point.pointGenerator(min.x, max.x + 1, centerUpperBound - 2 * HALFMAXROOMLENGTH, centerUpperBound);
+                upHalf = generateHalf(Math.min(centerUpperBound - center.y + 1, HALFMAXROOMLENGTH));
                 downHalf = generateOneHalf(upHalf, -1);
             }
-            leftHalf = generateHalf( HALFMAXROOMLENGTH + 1);
+            int bound = (Math.max(upHalf, downHalf) >= HALFMAXROOMLENGTH / 2) ? HALFMAXROOMLENGTH / 2 : HALFMAXROOMLENGTH;
+            leftHalf = generateHalf( bound + 1);
             rightHalf = generateOneHalf(leftHalf, 1);
         }
         return new Room(new Point(center.x - leftHalf, center.y - downHalf), new Point(center.x + rightHalf, center.y + upHalf));
@@ -101,8 +90,25 @@ public class Room implements Comparable<Room>{
      * @param amend 1 or -1
      * @return the amended half
      */
-    static private int generateOneHalf(int half, int amend) {
-        if (half == 1) { return half; }
+    private static int generateOneHalf(int half, int amend) {
+        if (half == 0 && amend == -1) { return half; }
+        if (half == HALFMAXROOMLENGTH) { return half - 1; }
         return (Point.RANDOM.nextInt(2) == 0) ? half : half + amend;
     }
+
+    static Comparator<Room> roomComparator() {
+        return new roomComparator();
+    }
+
+    private static class roomComparator implements Comparator<Room> {
+        @Override
+        public int compare(Room o1, Room o2) {
+            return Integer.compare(Hamming(o1.center, WorldGenerator.mapCenter), Hamming(o2.center, WorldGenerator.mapCenter));
+        }
+    }
+
+    private static int Hamming(Point a, Point b) {
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    }
+
 }
