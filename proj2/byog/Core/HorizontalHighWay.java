@@ -22,7 +22,7 @@ public class HorizontalHighWay extends HighWay {
     static HorizontalHighWay hHWGenerator(Room left, Room right) {
         int lowerBound = Math.max(left.min.y, right.min.y);
         int upperBound = Math.min(left.max.y, right.max.y) + 1;
-        int randNum = Point.RANDOM.nextInt(upperBound - lowerBound);
+        int randNum = Game.RANDOM.nextInt(upperBound - lowerBound);
         return new HorizontalHighWay(lowerBound + randNum, left.max.x + 1, right.min.x - 1);
     }
 }

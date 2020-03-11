@@ -21,7 +21,7 @@ public class VerticalHighWay extends HighWay {
     static VerticalHighWay vHWGenerator(Room down, Room up) {
         int lowerBound = Math.max(down.min.x, up.min.x);
         int upperBound = Math.min(down.max.x, up.max.x) + 1;
-        int randNum = Point.RANDOM.nextInt(upperBound - lowerBound);
+        int randNum = Game.RANDOM.nextInt(upperBound - lowerBound);
         return new VerticalHighWay(lowerBound + randNum, down.max.y + 1, up.min.y - 1);
     }
 }

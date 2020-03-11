@@ -7,6 +7,10 @@ public class Room {
     public final static int HALFMINROOMLENGTH = 0;
     public final static int HALFMAXROOMLENGTH = 5;
 
+    private static final int WIDTH = Game.WIDTH;
+    private static final int HEIGHT = Game.HEIGHT;
+    private static final Point mapCenter = new Point(WIDTH / 2, HEIGHT / 2);
+
     /**
      * min is the left-bottom point of the room
      * max is the right-top point of the room
@@ -31,7 +35,7 @@ public class Room {
         Point center;
         int leftHalf, rightHalf, upHalf, downHalf;
         if (s == null) {
-            center = Point.pointGenerator(HALFMAXROOMLENGTH + 1, WorldGenerator.WIDTH - HALFMAXROOMLENGTH - 1, HALFMAXROOMLENGTH + 1, WorldGenerator.HEIGHT - HALFMAXROOMLENGTH - 1);
+            center = Point.pointGenerator(HALFMAXROOMLENGTH + 1, WIDTH - HALFMAXROOMLENGTH - 1, HALFMAXROOMLENGTH + 1, HEIGHT - HALFMAXROOMLENGTH - 1);
             leftHalf = generateHalf(HALFMAXROOMLENGTH + 1);
             rightHalf = generateOneHalf(leftHalf, 1);
             int bound = (Math.max(leftHalf, rightHalf) >= HALFMAXROOMLENGTH / 2) ? HALFMAXROOMLENGTH / 2 : HALFMAXROOMLENGTH;
@@ -81,7 +85,7 @@ public class Room {
      * @return a reasonable half width or half height of the room
      */
     static private int generateHalf(int bound) {
-        return HALFMINROOMLENGTH + Point.RANDOM.nextInt(bound - HALFMINROOMLENGTH);
+        return HALFMINROOMLENGTH + Game.RANDOM.nextInt(bound - HALFMINROOMLENGTH);
     }
 
     /**
@@ -93,7 +97,7 @@ public class Room {
     private static int generateOneHalf(int half, int amend) {
         if (half == 0 && amend == -1) { return half; }
         if (half == HALFMAXROOMLENGTH) { return half - 1; }
-        return (Point.RANDOM.nextInt(2) == 0) ? half : half + amend;
+        return (Game.RANDOM.nextInt(2) == 0) ? half : half + amend;
     }
 
     static Comparator<Room> roomComparator() {
@@ -103,7 +107,7 @@ public class Room {
     private static class roomComparator implements Comparator<Room> {
         @Override
         public int compare(Room o1, Room o2) {
-            return Integer.compare(Hamming(o1.center, WorldGenerator.mapCenter), Hamming(o2.center, WorldGenerator.mapCenter));
+            return Integer.compare(Hamming(o1.center, mapCenter), Hamming(o2.center, mapCenter));
         }
     }
 

@@ -1,10 +1,8 @@
 package byog.Core;
 
-import byog.SaveDemo.World;
 import byog.TileEngine.Tileset;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
-import org.hamcrest.core.IsInstanceOf;
 
 import java.util.*;
 
@@ -20,22 +18,20 @@ import java.util.*;
  */
 public class WorldGenerator {
 
-    /* Can be used in package byog.Core */
-    static final int WIDTH = 100;
-    static final int HEIGHT = 50;
-
-    static final Point mapCenter = new Point(WorldGenerator.WIDTH / 2, WorldGenerator.HEIGHT / 2);
+    private static final int WIDTH = Game.WIDTH;
+    private static final int HEIGHT = Game.HEIGHT;
 
     /* queue is a priority queue and the room which is closed to the center of the map will be firstly expanded */
-    Queue<Room> queue = new PriorityQueue<>(Room.roomComparator());
-    Stack<Room> stack = new Stack<>();
+    private Queue<Room> queue = new PriorityQueue<>(Room.roomComparator());
+    private Stack<Room> stack = new Stack<>();
 
     TETile[][] world;
     boolean[][] isOccupyChecker;
 
+    private Point player;
+    private Point lockedDoor;
+
     WorldGenerator() {
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
 
         // initialize the world
         world = new TETile[WIDTH][HEIGHT];
@@ -57,12 +53,20 @@ public class WorldGenerator {
         // add the wall
         addWall();
 
-        ter.renderFrame(world);
+        // add the player
+        addPlayer();
+
+        // add the locked door
+        addLockedDoor();
+    }
+
+    public TETile[][] getWorld() {
+        return world;
     }
 
     private void algorithm(Collection<Room> container) {
         int cnt = 0;
-        while (!container.isEmpty() && cnt < 15) {
+        while (!container.isEmpty() && cnt < 30) {
             Room nowRoom;
             if (container instanceof Stack) {
                 Stack<Room> stack_tmp = (Stack<Room>) container;
@@ -200,6 +204,36 @@ public class WorldGenerator {
             if (world[x+1][y-1].equals(Tileset.NOTHING)) { world[x+1][y-1] = Tileset.WALL; }
             if (world[x+1][y+1].equals(Tileset.NOTHING)) { world[x+1][y+1] = Tileset.WALL; }
         }
+    }
+
+    private void addPlayer() {
+        boolean flag = true;
+        while(flag) {
+            player = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
+            if (world[player.x][player.y].equals(Tileset.FLOOR)) {
+                world[player.x][player.y] = Tileset.PLAYER;
+                flag = false;
+            }
+        }
+    }
+
+    private void addLockedDoor() {
+        boolean flag = true;
+        while(flag) {
+            lockedDoor = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
+            if (world[lockedDoor.x][lockedDoor.y].equals(Tileset.WALL)) {
+                world[lockedDoor.x][lockedDoor.y] = Tileset.LOCKED_DOOR;
+                flag = false;
+            }
+        }
+    }
+
+    public Point getPlayer() {
+        return player;
+    }
+
+    public Point getLockedDoor() {
+        return lockedDoor;
     }
 
 

@@ -6,8 +6,6 @@ import java.util.Random;
  * Point can be accessed by the class in the same package
  */
 class Point {
-    static final int seed = 38284;
-    public static final Random RANDOM = new Random(seed);
     int x;
     int y;
     Point(int x, int y) {
@@ -35,8 +33,8 @@ class Point {
      * @return a point satisfies the specific requirement
      */
     static Point pointGenerator(int minX, int maxX, int minY, int maxY) {
-        int x = RandomUtils.uniform(RANDOM, minX, maxX);
-        int y = RandomUtils.uniform(RANDOM, minY, maxY);
+        int x = RandomUtils.uniform(Game.RANDOM, minX, maxX);
+        int y = RandomUtils.uniform(Game.RANDOM, minY, maxY);
         return new Point(x, y);
     }
 }
