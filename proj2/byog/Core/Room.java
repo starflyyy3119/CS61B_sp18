@@ -107,12 +107,17 @@ public class Room {
     private static class roomComparator implements Comparator<Room> {
         @Override
         public int compare(Room o1, Room o2) {
-            return Integer.compare(Hamming(o1.center, mapCenter), Hamming(o2.center, mapCenter));
+            return Integer.compare(Point.Hamming(o1.center, mapCenter), Point.Hamming(o2.center, mapCenter));
         }
     }
 
-    private static int Hamming(Point a, Point b) {
-        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    /**
+     * Check whether the room is out of the world
+     * @param room to be checked
+     * @return true if the room is out of the world, otherwise false
+     */
+    public static boolean isOut(Room room) {
+        return room.min.x < 1 || room.max.x > WIDTH - 3 || room.min.y < 1 || room.max.y > HEIGHT - 3;
     }
 
 }

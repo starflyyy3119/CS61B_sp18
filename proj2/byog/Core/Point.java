@@ -37,4 +37,8 @@ class Point {
         int y = RandomUtils.uniform(Game.RANDOM, minY, maxY);
         return new Point(x, y);
     }
+
+    static int Hamming(Point a, Point b) {
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    }
 }
