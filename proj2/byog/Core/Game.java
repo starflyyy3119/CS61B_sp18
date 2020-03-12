@@ -4,7 +4,6 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class Game {
@@ -14,12 +13,12 @@ public class Game {
     public static final int HEIGHT = 30;
 
     public static Random RANDOM;
-    public TETile[][] preWorld;
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+
     }
 
     /**
@@ -46,9 +45,9 @@ public class Game {
 
         String[] operation = s[1].split(":");
 
-            TETile[][] world;
+        TETile[][] world;
 
-            WorldGenerator wg = new WorldGenerator();
+        World wg = new World();
         world = wg.getWorld();
         System.out.println(TETile.toString(world));
 
@@ -87,4 +86,5 @@ public class Game {
         TETile[][] finalWorldFrame = world;
         return finalWorldFrame;
     }
+
 }
