@@ -3,6 +3,7 @@ package byog.Core;
 import byog.TileEngine.Tileset;
 import byog.TileEngine.TETile;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 
@@ -26,7 +27,8 @@ public class World {
     private Point player;
     private Point lockedDoor;
 
-    World() {
+    // constructive code block
+    {
         // initialize the world
         world = new TETile[WIDTH][HEIGHT];
         for (int x = 0; x < WIDTH; x += 1) {
@@ -34,6 +36,9 @@ public class World {
                 world[x][y] = Tileset.NOTHING;
             }
         }
+    }
+
+    public World() {
 
         // initialize the isOccupyChecker
         isOccupyChecker = new boolean[WIDTH][HEIGHT];
@@ -64,6 +69,35 @@ public class World {
         addLockedDoor();
     }
 
+    /**
+     * Load the world from the txt file
+     * @param pathName the relative path of the txt file
+     */
+    public World(String pathName) throws FileNotFoundException {
+        String worldString = InOutput.read(pathName);
+        for (int j = HEIGHT - 1; j >= 0; j--) {
+            int cast_j = HEIGHT - j - 1;
+            for (int i = 0; i <= WIDTH - 1; i++) {
+                switch (worldString.charAt(cast_j * WIDTH + i)) {
+                    case '@':
+                        setPlayer(new Point(i, j));
+                        break;
+                    case '█':
+                        setLockedDoor(new Point(i, j));
+                        break;
+                    case '#':
+                        world[i][j] = Tileset.WALL;
+                        break;
+                    case '·':
+                        world[i][j] = Tileset.FLOOR;
+                        break;
+                    default:
+                        world[i][j] = Tileset.NOTHING;
+                }
+            }
+        }
+    }
+
     public TETile[][] getWorld() {
         return world;
     }
@@ -79,7 +113,7 @@ public class World {
                 Queue<Room> queue_tmp = (Queue<Room>) container;
                 nowRoom = queue_tmp.remove();
             }
-            drawRoom(nowRoom);
+            addRoom(nowRoom);
 
             // expand to leftRoom.roomGenerator(null, null)
             Room left = Room.roomGenerator("left", nowRoom);
@@ -163,7 +197,7 @@ public class World {
      * draw a room in the world
      * @param room is the Object to be added
      */
-    private void drawRoom(Room room) {
+    private void addRoom(Room room) {
         for (int i = room.min.x; i <= room.max.x; i++) {
             for (int j = room.min.y; j <= room.max.y; j++) {
                 world[i][j] = Tileset.FLOOR;
@@ -181,12 +215,12 @@ public class World {
     private void addWall() {
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
-                drawWall(i, j);
+                addWall(i, j);
             }
         }
     }
 
-    private void drawWall(int x, int y) {
+    private void addWall(int x, int y) {
         if (world[x][y].equals(Tileset.FLOOR)) {
             if (world[x-1][y].equals(Tileset.NOTHING)) { world[x-1][y] = Tileset.WALL; }
             if (world[x+1][y].equals(Tileset.NOTHING)) { world[x+1][y] = Tileset.WALL; }
@@ -204,9 +238,9 @@ public class World {
     private void addPlayer() {
         boolean flag = true;
         while(flag) {
-            player = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
-            if (world[player.x][player.y].equals(Tileset.FLOOR)) {
-                world[player.x][player.y] = Tileset.PLAYER;
+            Point p = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
+            if (getTile(p).equals(Tileset.FLOOR)) {
+                setPlayer(p);
                 flag = false;
             }
         }
@@ -215,9 +249,9 @@ public class World {
     private void addLockedDoor() {
         boolean flag = true;
         while(flag) {
-            lockedDoor = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
-            if (world[lockedDoor.x][lockedDoor.y].equals(Tileset.WALL)) {
-                world[lockedDoor.x][lockedDoor.y] = Tileset.LOCKED_DOOR;
+            Point p = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
+            if (getTile(p).equals(Tileset.WALL)) {
+                setLockedDoor(p);
                 flag = false;
             }
         }
@@ -229,5 +263,27 @@ public class World {
 
     public Point getLockedDoor() {
         return lockedDoor;
+    }
+
+    public void setPlayer(Point pos) {
+        player = pos;
+        world[pos.x][pos.y] = Tileset.PLAYER;
+    }
+
+    public void setFloor(Point pos) {
+        world[pos.x][pos.y] = Tileset.FLOOR;
+    }
+
+    public TETile getTile(Point pos) {
+        return world[pos.x][pos.y];
+    }
+
+    public void setUnlockedDoor(Point pos) {
+        world[pos.x][pos.y] = Tileset.UNLOCKED_DOOR;
+    }
+
+    public void setLockedDoor(Point pos) {
+        lockedDoor = pos;
+        world[pos.x][pos.y] = Tileset.LOCKED_DOOR;
     }
 }

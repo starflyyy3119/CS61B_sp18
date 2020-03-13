@@ -1,7 +1,5 @@
 package byog.Core;
 
-import java.util.Random;
-
 /**
  * Point can be accessed by the class in the same package
  */
