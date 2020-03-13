@@ -10,8 +10,8 @@ import java.util.Random;
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 30;
-    public static final int HEIGHT = 20;
+    public static final int WIDTH = 80;
+    public static final int HEIGHT = 30;
 
     public static Random RANDOM;
     private boolean gameWin;
@@ -61,7 +61,7 @@ public class Game {
 
         String operations;
         if (firstOption == 'n') {
-            int seed = Integer.parseInt(input.split("([a-z]+)")[1]);
+            Long seed = Long.parseLong(input.split("([a-z]+)")[1]);
             RANDOM = new Random(seed);
 
             operations = input.split("[\\d]+")[1];

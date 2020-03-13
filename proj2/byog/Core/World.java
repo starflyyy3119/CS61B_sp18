@@ -250,12 +250,17 @@ public class World {
         boolean flag = true;
         while(flag) {
             Point p = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
-            if (getTile(p).equals(Tileset.WALL)) {
+            if (getTile(p).equals(Tileset.WALL) && isFloorNeighbor(p)) {
                 setLockedDoor(p);
                 flag = false;
             }
         }
     }
+
+    private boolean isFloorNeighbor(Point p) {
+        return (world[p.x-1][p.y].equals(Tileset.FLOOR) || world[p.x+1][p.y].equals(Tileset.FLOOR) || world[p.x][p.y-1].equals(Tileset.FLOOR) || world[p.x][p.y+1].equals(Tileset.FLOOR));
+    }
+
 
     public Point getPlayer() {
         return player;
