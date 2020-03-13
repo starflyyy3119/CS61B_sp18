@@ -54,7 +54,7 @@ public class Game {
      * @param input String
      * @return the operations
      */
-    private String inputSolver(String input) throws FileNotFoundException {
+    private String inputSolver(String input) {
         input = input.toLowerCase();
 
         char firstOption = input.charAt(0);
@@ -69,7 +69,11 @@ public class Game {
             wd = new World();
         } else if (firstOption == 'l') {
             operations = input.substring(1);
-            wd = new World(fileName);
+            try {
+                wd = new World(fileName);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         } else {
             wd = null;
             operations = null;
