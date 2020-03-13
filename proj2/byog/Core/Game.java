@@ -15,7 +15,7 @@ public class Game {
 
     public static Random RANDOM;
     private boolean gameWin;
-    private String fileName = "./load.txt";
+    private String fileName = "load.txt";
     private World wd;
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
