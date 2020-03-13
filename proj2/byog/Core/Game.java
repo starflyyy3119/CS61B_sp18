@@ -36,7 +36,7 @@ public class Game {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
-    public TETile[][] playWithInputString(String input) throws FileNotFoundException {
+    public TETile[][] playWithInputString(String input) {
 
         // solve the input
         String opts = inputSolver(input);
