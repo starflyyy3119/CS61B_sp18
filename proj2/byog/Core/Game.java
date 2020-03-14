@@ -3,7 +3,9 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import edu.princeton.cs.introcs.StdDraw;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
@@ -21,8 +23,74 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
-
+        setCanvas();
+        mainMenu(null);
+        Long seed = getSeed();
+        System.out.println(seed);
     }
+
+    /**
+     * Get length 1 string of the input
+     * @return a string with length 1 of the user input
+     */
+    private String getUserInput() {
+        String input = "";
+        while(!StdDraw.hasNextKeyTyped()) {        // Finally find the bug, without this while loop, the program will check that whether I have
+            StdDraw.pause(500);                  // type a character. So if I type after this check, I will miss the opportunity to get that char.
+        }
+        if (StdDraw.hasNextKeyTyped()) {
+            char key = StdDraw.nextKeyTyped();
+            input += String.valueOf(key);
+        }
+        return input;
+    }
+
+    private Long getSeed() {
+
+        StringBuilder seed = new StringBuilder();
+        String now = getUserInput();
+        while (!now.equals("s")) {
+            seed.append(now);
+            mainMenu(seed.toString());
+            now = getUserInput();
+        }
+        return Long.parseLong(seed.toString());
+    }
+
+    private void setCanvas() {
+        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
+        Font font = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(font);
+        StdDraw.setXscale(0, WIDTH);
+        StdDraw.setYscale(0, HEIGHT);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.clear(Color.BLACK);
+        StdDraw.enableDoubleBuffering();
+    }
+
+    private void mainMenu(String s) {
+        StdDraw.clear();
+        StdDraw.clear(Color.BLACK);
+
+        // draw the main menu
+        Font smallFont = new Font("Monaco", Font.BOLD, 20);
+        Font BigFont = new Font("Monaco", Font.BOLD, 30);
+
+        StdDraw.setFont(BigFont);
+        StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 * 3, "CS61B: GXY's GAME");
+
+        StdDraw.setFont(smallFont);
+        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "New Game (N)");
+        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 1.2, "Load Game (L)");
+        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 2.4, "Quit (Q)");
+
+        if (s != null) {
+            StdDraw.setFont(smallFont);
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0, s);
+        }
+        StdDraw.show();
+    }
+
 
     /**
      * Method used for autograding and testing the game code. The input string will be a series
@@ -61,7 +129,7 @@ public class Game {
 
         String operations;
         if (firstOption == 'n') {
-            Long seed = Long.parseLong(input.split("([a-z]+)")[1]);
+            long seed = Long.parseLong(input.split("([a-z]+)")[1]);
             RANDOM = new Random(seed);
 
             operations = input.split("[\\d]+")[1];
