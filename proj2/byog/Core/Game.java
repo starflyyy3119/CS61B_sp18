@@ -5,6 +5,7 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
+import javax.xml.transform.sax.SAXSource;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.Random;
@@ -20,8 +21,10 @@ public class Game {
     public  static final int CANVASHEIGHT = HEIGHT + 2;
     private boolean gameWin;
     private boolean SEED = false;
+    private boolean SAVE = false;
     private String fileName = "load.txt";
     private World wd;
+
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -36,6 +39,8 @@ public class Game {
         ter.renderFrame(wd.getWorld(), null);
 
         operations();
+
+        System.exit(5);
     }
 
     private void operations() {
@@ -48,6 +53,9 @@ public class Game {
                 String opt = getUserInput();
                 movePlayer(wd, opt.charAt(0));
                 ter.renderFrame(wd.getWorld(), null);
+            }
+            if (SAVE) {
+                break;
             }
         }
     }
@@ -229,7 +237,8 @@ public class Game {
     }
 
     /**
-     * Helper function for playWithInputString, used to move the player
+     * Helper function for playWithInputString, used to moAutograderSecurityManager.java)
+    at java.lang.Runtime.exit:113 (Runtime.java)ve the player
      * @param wd World Class instance
      * @param opt an operation
      */
@@ -255,7 +264,7 @@ public class Game {
                 break;
             case 'q':
                 InOutput.write(fileName, TETile.toString(wd.getWorld()));
-                System.exit(0);
+                SAVE = true;
                 break;
             case ':':
                 break;
