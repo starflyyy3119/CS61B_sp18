@@ -13,21 +13,82 @@ public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int HEIGHT = 50;
 
     public static Random RANDOM;
+
+    public  static final int CANVASHEIGHT = HEIGHT + 2;
     private boolean gameWin;
+    private boolean SEED = false;
     private String fileName = "load.txt";
     private World wd;
+
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
-        setCanvas();
+        ter.initialize(WIDTH, CANVASHEIGHT);
+
         mainMenu(null);
-        Long seed = getSeed();
-        System.out.println(seed);
+
+        setWorld(getUserInput());
+
+        ter.renderFrame(wd.getWorld(), null);
+
+        operations();
     }
+
+    private void operations() {
+        while (true) {
+            if (StdDraw.isMousePressed()) {
+                TETile tile = wd.getTile(new Point((int) StdDraw.mouseX(), (int) StdDraw.mouseY()));
+                drawHint(tile);
+            }
+            if (StdDraw.hasNextKeyTyped()) {
+                String opt = getUserInput();
+                movePlayer(wd, opt.charAt(0));
+                ter.renderFrame(wd.getWorld(), null);
+            }
+        }
+    }
+
+    private void drawHint(TETile tile) {
+        String s;
+        if (tile.equals(Tileset.FLOOR)) {
+            s = "floor";
+        } else if (tile.equals(Tileset.WALL)) {
+            s = "wall";
+        } else if (tile.equals(Tileset.LOCKED_DOOR)) {
+            s = "locked door";
+        } else if (tile.equals(Tileset.PLAYER)) {
+            s = "you";
+        } else {
+            s = "outside";
+        }
+        ter.renderFrame(wd.getWorld(), s);
+    }
+
+    private void setWorld(String firstOption) {
+        switch (firstOption) {
+            case "n":
+                SEED = true;
+                mainMenu(null);
+                Long seed = getSeed();
+                RANDOM = new Random(seed);
+                wd = new World();
+                break;
+            case "l":
+                try {
+                    wd = new World(fileName);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                System.exit(0);
+        }
+    }
+
 
     /**
      * Get length 1 string of the input
@@ -36,13 +97,13 @@ public class Game {
     private String getUserInput() {
         String input = "";
         while(!StdDraw.hasNextKeyTyped()) {        // Finally find the bug, without this while loop, the program will check that whether I have
-            StdDraw.pause(500);                  // type a character. So if I type after this check, I will miss the opportunity to get that char.
+            StdDraw.pause(5);                  // type a character. So if I type after this check, I will miss the opportunity to get that char.
         }
         if (StdDraw.hasNextKeyTyped()) {
             char key = StdDraw.nextKeyTyped();
             input += String.valueOf(key);
         }
-        return input;
+        return input.toLowerCase();
     }
 
     private Long getSeed() {
@@ -55,17 +116,6 @@ public class Game {
             now = getUserInput();
         }
         return Long.parseLong(seed.toString());
-    }
-
-    private void setCanvas() {
-        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
-        Font font = new Font("Monaco", Font.BOLD, 30);
-        StdDraw.setFont(font);
-        StdDraw.setXscale(0, WIDTH);
-        StdDraw.setYscale(0, HEIGHT);
-        StdDraw.setPenColor(Color.white);
-        StdDraw.clear(Color.BLACK);
-        StdDraw.enableDoubleBuffering();
     }
 
     private void mainMenu(String s) {
@@ -83,6 +133,8 @@ public class Game {
         StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "New Game (N)");
         StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 1.2, "Load Game (L)");
         StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 2.4, "Quit (Q)");
+
+        if (SEED) { StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 + 1.5, "Please enter a seed(press S to confirm)"); }
 
         if (s != null) {
             StdDraw.setFont(smallFont);
@@ -205,6 +257,9 @@ public class Game {
                 InOutput.write(fileName, TETile.toString(wd.getWorld()));
                 System.out.println(TETile.toString(wd.getWorld()));
                 System.exit(0);
+                break;
+            case ':':
+                break;
         }
     }
 }

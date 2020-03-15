@@ -46,14 +46,14 @@ public class World {
         // add the first room into the container
         /*
          * Can choose to use priority queue or stack as the container
-         * priority queue: generate the center part to of the map first.
+         * priority queue: generate the center part of the map first.
          * stack:          generate deep maze first
          */
         Room firstRoom = Room.roomGenerator(null, null);
         Stack<Room> stack = new Stack<>();
         addRoom(stack, firstRoom);
-        // Queue<Room> queue = new PriorityQueue<>(Room.roomComparator());
-        // addRoom(queue, firstRoom);
+         //Queue<Room> queue = new PriorityQueue<>(Room.roomComparator());
+         //addRoom(queue, firstRoom);
 
         // use the search algorithm to expand the maze
         algorithm(stack);
@@ -104,7 +104,7 @@ public class World {
 
     private void algorithm(Collection<Room> container) {
         int cnt = 0;
-        while (!container.isEmpty() && cnt < 30) {
+        while (!container.isEmpty() && cnt < 20) {
             Room nowRoom;
             if (container instanceof Stack) {
                 Stack<Room> stack_tmp = (Stack<Room>) container;
