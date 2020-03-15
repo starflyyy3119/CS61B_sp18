@@ -1,5 +1,6 @@
 package byog.TileEngine;
 
+import byog.Core.Game;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Color;
@@ -34,7 +35,8 @@ public class TERenderer {
         this.yOffset = yOff;
         StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
         Font font = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
-        StdDraw.setFont(font);      
+        StdDraw.setFont(font);
+        StdDraw.setPenColor(Color.white);
         StdDraw.setXscale(0, width);
         StdDraw.setYscale(0, height);
 
@@ -83,7 +85,7 @@ public class TERenderer {
      * the screen in tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void renderFrame(TETile[][] world) {
+    public void renderFrame(TETile[][] world, String s) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
@@ -95,6 +97,10 @@ public class TERenderer {
                 }
                 world[x][y].draw(x + xOffset, y + yOffset);
             }
+        }
+        if (s != null) {
+            StdDraw.setPenColor(Color.white);
+            StdDraw.textLeft(0, Game.CANVASHEIGHT - 1, s);
         }
         StdDraw.show();
     }

@@ -26,7 +26,9 @@ public class MemoryGameSolution {
 
         long seed = Long.parseLong(args[0]);
         MemoryGameSolution game = new MemoryGameSolution(40, 40, seed);
-        game.startGame();
+        //game.startGame();
+        String userin = game.solicitNCharsInput(1);
+        System.out.println(userin);
     }
 
     public MemoryGameSolution(int width, int height, long seed) {
@@ -40,7 +42,7 @@ public class MemoryGameSolution {
         StdDraw.clear(Color.BLACK);
         StdDraw.enableDoubleBuffering();
 
-        rand = new Random(seed);
+        //rand = new Random(seed);
     }
 
     public void startGame() {
@@ -127,7 +129,7 @@ public class MemoryGameSolution {
         Font bigFont = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(bigFont);
         StdDraw.setPenColor(Color.white);
-        StdDraw.text(midWidth, midHeight, s);
+        StdDraw.text(20, 15, s);
         StdDraw.show();
     }
 }

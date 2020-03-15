@@ -116,7 +116,7 @@ public class HexWorld {
         int[][] positions = calPosition(2);
         draw(positions, 2, world);
 
-        ter.renderFrame(world);
+        ter.renderFrame(world, null);
 
     }
 }
