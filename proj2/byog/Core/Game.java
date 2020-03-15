@@ -255,7 +255,6 @@ public class Game {
                 break;
             case 'q':
                 InOutput.write(fileName, TETile.toString(wd.getWorld()));
-                System.out.println(TETile.toString(wd.getWorld()));
                 System.exit(0);
                 break;
             case ':':
