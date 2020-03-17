@@ -13,18 +13,16 @@ public class Game {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 50;
     public static final int HEIGHT = 30;
-
     public static Random RANDOM;
     public static Long seedLong;
     public static final int CANVASHEIGHT = HEIGHT + 2;
-    private static boolean hasFlower;
+
+    private static boolean hasFlower = false;
     private static boolean gameWin = false;
-    //public static boolean gameLose = false;
     private static boolean SEED = false;
     private static boolean SAVE = false;
     private String fileName = "load.txt";
     private World wd;
-
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -45,8 +43,6 @@ public class Game {
 
     private void operations() {
         while (true) {
-//            wd.runMonster();
-//            ter.renderFrame(wd.getWorld(), null);
             if (StdDraw.isMousePressed()) {
                 TETile tile = wd.getTile(new Point((int) StdDraw.mouseX(), (int) StdDraw.mouseY()));
                 drawHint(tile);
@@ -64,11 +60,6 @@ public class Game {
                 StdDraw.pause(500);
                 break;
             }
-//            if (gameLose) {
-//                mainMenu(null);
-//                StdDraw.pause(500);
-//                break;
-//            }
         }
     }
 
@@ -106,7 +97,6 @@ public class Game {
                 System.exit(0);
         }
     }
-
 
     /**
      * Get length 1 string of the input
@@ -148,10 +138,6 @@ public class Game {
             StdDraw.setPenColor(Color.white);
             StdDraw.setFont(BigFont);
             StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Win!");
-//        } else if (gameLose) {
-//            StdDraw.setPenColor(Color.white);
-//            StdDraw.setFont(BigFont);
-//            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Lose!");
         } else {
             StdDraw.setFont(BigFont);
             StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 * 3, "CS61B: GXY's GAME");
@@ -173,7 +159,6 @@ public class Game {
         }
         StdDraw.show();
     }
-
 
     /**
      * Method used for autograding and testing the game code. The input string will be a series
@@ -262,8 +247,6 @@ public class Game {
             hasFlower = true;
             wd.setPlayer(newPos);
             wd.setFloor(player);
-//        } else if (newPos.equals(monster)) {
-//            gameLose = true;
         }
     }
 
