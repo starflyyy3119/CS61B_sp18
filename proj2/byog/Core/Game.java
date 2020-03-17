@@ -15,6 +15,7 @@ public class Game {
     public static final int HEIGHT = 30;
 
     public static Random RANDOM;
+    public static Long seedLong;
     public  static final int CANVASHEIGHT = HEIGHT + 2;
     private boolean hasFlower;
     private boolean gameWin = false;
@@ -92,12 +93,14 @@ public class Game {
             case "n":
                 SEED = true;
                 mainMenu(null);
-                Long seed = getSeed();
-                RANDOM = new Random(seed);
+                seedLong = getSeed();
+                RANDOM = new Random(seedLong);
                 wd = new World();
                 break;
             case "l":
                 wd = new World(fileName);
+                seedLong = Long.parseLong(InOutput.read("seed.txt"));
+                RANDOM = new Random(seedLong);
                 break;
             default:
                 System.exit(0);
@@ -209,8 +212,8 @@ public class Game {
 
         String operations;
         if (firstOption == 'n') {
-            long seed = Long.parseLong(input.split("([a-z]+)")[1]);
-            RANDOM = new Random(seed);
+            seedLong = Long.parseLong(input.split("([a-z]+)")[1]);
+            RANDOM = new Random(seedLong);
 
             operations = input.split("[\\d]+")[1];
             operations = operations.substring(1);
@@ -218,6 +221,8 @@ public class Game {
         } else if (firstOption == 'l') {
             operations = input.substring(1);
             wd = new World(fileName);
+            seedLong = Long.parseLong(InOutput.read("seed.txt"));
+            RANDOM = new Random(seedLong);
         } else {
             wd = null;
             operations = null;
@@ -291,6 +296,7 @@ public class Game {
             case 'q':
                 //InOutput.write(fileName, TETile.toString(wd.getWorld()));
                 InOutput.writeObject(fileName, wd);
+                InOutput.write("seed.txt", Long.toString(seedLong));
                 SAVE = true;
                 break;
             case ':':

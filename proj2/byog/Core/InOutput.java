@@ -1,6 +1,7 @@
 package byog.Core;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class InOutput {
     public static void writeObject(String pathName, World world) {
@@ -27,5 +28,28 @@ public class InOutput {
             e.printStackTrace();
         }
         return world;
+    }
+    public static String read(String pathName) {
+        Scanner s = null;
+        try {
+            s = new Scanner(new File(pathName));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        assert s != null;
+        String string = s.nextLine();
+        s.close();
+        return string;
+    }
+
+    public static void write(String pathName, String string) {
+        try
+        {
+            FileWriter writer = new FileWriter(pathName);
+            writer.write(string);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
