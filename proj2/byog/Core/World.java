@@ -341,7 +341,7 @@ public class World implements Serializable {
         int tryTimes = 0;
         Point newPos = null;
         while (tryTimes < 10) {
-            int randNum = RandomUtils.uniform(new Random(), 4);
+            int randNum = RandomUtils.uniform(Game.RANDOM, 4);
 
             switch (randNum) {
                 case 0:

@@ -15,7 +15,6 @@ public class Game {
     public static final int HEIGHT = 30;
 
     public static Random RANDOM;
-
     public  static final int CANVASHEIGHT = HEIGHT + 2;
     private boolean hasFlower;
     private boolean gameWin = false;
@@ -219,7 +218,6 @@ public class Game {
         } else if (firstOption == 'l') {
             operations = input.substring(1);
             wd = new World(fileName);
-            System.out.println(TETile.toString(wd.getWorld()));
         } else {
             wd = null;
             operations = null;
