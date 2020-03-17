@@ -1,30 +1,31 @@
 package byog.Core;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.*;
 
 public class InOutput {
-    public static String read(String pathName) throws FileNotFoundException {
-        Scanner s = new Scanner(new File(pathName));
-        StringBuilder sb = new StringBuilder();
-        while (s.hasNextLine()) {
-            sb.append(s.nextLine());
-        }
-        s.close();
-        return sb.toString();
-    }
-
-    public static void write(String pathName, String string) {
-        try
-        {
-            FileWriter writer = new FileWriter(pathName);
-            writer.write(string);
-            writer.close();
+    public static void writeObject(String pathName, World world) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(pathName);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(world);
+            out.close();
+            fileOut.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static World readObject(String pathName) {
+        World world = null;
+        try {
+            FileInputStream fileIn = new FileInputStream(pathName);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            world = (World) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return world;
     }
 }

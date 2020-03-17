@@ -2,8 +2,9 @@ package byog.Core;
 
 import byog.TileEngine.Tileset;
 import byog.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
 
-import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -16,7 +17,9 @@ import java.util.*;
  * After looking at the implementation of this code, I got the idea that I can add the flour and wall separately.
  * I can construct room(in this case, room only contains flour) and highway class.
  */
-public class World {
+public class World implements Serializable {
+
+    private static final long serialVersionUID = 6529685098267757690L;
 
     private static final int WIDTH = Game.WIDTH;
     private static final int HEIGHT = Game.HEIGHT;
@@ -26,9 +29,14 @@ public class World {
 
     private Point player;
     private Point lockedDoor;
-
+    private Point flower;
+    private Point monster;
     // constructive code block
-    {
+//    {
+//
+//    }
+
+    public World() {
         // initialize the world
         world = new TETile[WIDTH][HEIGHT];
         for (int x = 0; x < WIDTH; x += 1) {
@@ -36,9 +44,6 @@ public class World {
                 world[x][y] = Tileset.NOTHING;
             }
         }
-    }
-
-    public World() {
 
         // initialize the isOccupyChecker
         isOccupyChecker = new boolean[WIDTH][HEIGHT];
@@ -67,35 +72,26 @@ public class World {
 
         // add the locked door
         addLockedDoor();
+
+        // add the flower
+        addFlower();
+
+        // add the monster
+        addMonster();
     }
 
     /**
      * Load the world from the txt file
      * @param pathName the relative path of the txt file
      */
-    public World(String pathName) throws FileNotFoundException {
-        String worldString = InOutput.read(pathName);
-        for (int j = HEIGHT - 1; j >= 0; j--) {
-            int cast_j = HEIGHT - j - 1;
-            for (int i = 0; i <= WIDTH - 1; i++) {
-                switch (worldString.charAt(cast_j * WIDTH + i)) {
-                    case '@':
-                        setPlayer(new Point(i, j));
-                        break;
-                    case '█':
-                        setLockedDoor(new Point(i, j));
-                        break;
-                    case '#':
-                        world[i][j] = Tileset.WALL;
-                        break;
-                    case '·':
-                        world[i][j] = Tileset.FLOOR;
-                        break;
-                    default:
-                        world[i][j] = Tileset.NOTHING;
-                }
-            }
-        }
+    public World(String pathName) {
+        World tmp = InOutput.readObject(pathName);
+        world = tmp.getWorld();
+        isOccupyChecker = tmp.isOccupyChecker;
+        player = tmp.getPlayer();
+        lockedDoor = tmp.getLockedDoor();
+        flower = tmp.getFlower();
+        monster = tmp.getMonster();
     }
 
     public TETile[][] getWorld() {
@@ -235,6 +231,28 @@ public class World {
         }
     }
 
+    private void addFlower() {
+        boolean flag = true;
+        while(flag) {
+            Point p = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
+            if (getTile(p).equals(Tileset.FLOOR)) {
+                setFlower(p);
+                flag = false;
+            }
+        }
+    }
+
+    private void addMonster() {
+        boolean flag = true;
+        while(flag) {
+            Point p = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
+            if (getTile(p).equals(Tileset.FLOOR)) {
+                setMonster(p);
+                flag = false;
+            }
+        }
+    }
+
     private void addPlayer() {
         boolean flag = true;
         while(flag) {
@@ -270,9 +288,27 @@ public class World {
         return lockedDoor;
     }
 
+    public Point getFlower() {
+        return flower;
+    }
+
+    public Point getMonster() {
+        return monster;
+    }
+
     public void setPlayer(Point pos) {
         player = pos;
         world[pos.x][pos.y] = Tileset.PLAYER;
+    }
+
+    public void setFlower(Point pos) {
+        flower = pos;
+        world[pos.x][pos.y] = Tileset.FLOWER;
+    }
+
+    public void setMonster(Point pos) {
+        monster = pos;
+        world[pos.x][pos.y] = Tileset.MONSTER;
     }
 
     public void setFloor(Point pos) {
@@ -290,5 +326,48 @@ public class World {
     public void setLockedDoor(Point pos) {
         lockedDoor = pos;
         world[pos.x][pos.y] = Tileset.LOCKED_DOOR;
+    }
+
+    public void runMonster() {
+        Point newPos = findNewPos();
+        if (newPos != null) {
+            setFloor(monster);
+            setMonster(newPos);
+        }
+        StdDraw.pause(100);
+    }
+
+    private Point findNewPos() {
+        int tryTimes = 0;
+        Point newPos = null;
+        while (tryTimes < 10) {
+            int randNum = RandomUtils.uniform(new Random(), 4);
+
+            switch (randNum) {
+                case 0:
+                    newPos = new Point(monster.x, monster.y + 1);
+                    break;
+                case 1:
+                    newPos = new Point(monster.x, monster.y - 1);
+                    break;
+                case 2:
+                    newPos = new Point(monster.x + 1, monster.y);
+                    break;
+                default:
+                    newPos = new Point(monster.x - 1, monster.y);
+            }
+
+            if (getTile(newPos).equals(Tileset.PLAYER)) {
+                Game.gameLose = true;
+                break;
+            } else if (getTile(newPos).equals(Tileset.FLOOR)) {
+                break;
+            } else {
+                newPos = null;
+            }
+
+            tryTimes++;
+        }
+        return newPos;
     }
 }

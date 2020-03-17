@@ -1,9 +1,11 @@
 package byog.Core;
 
+import java.io.Serializable;
+
 /**
  * Point can be accessed by the class in the same package
  */
-class Point {
+class Point implements Serializable {
     int x;
     int y;
     Point(int x, int y) {

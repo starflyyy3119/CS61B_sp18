@@ -5,21 +5,21 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
-import javax.xml.transform.sax.SAXSource;
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.util.Random;
 
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 50;
+    public static final int WIDTH = 50;
+    public static final int HEIGHT = 30;
 
     public static Random RANDOM;
 
     public  static final int CANVASHEIGHT = HEIGHT + 2;
-    private boolean gameWin;
+    private boolean hasFlower;
+    private boolean gameWin = false;
+    public static boolean gameLose = false;
     private boolean SEED = false;
     private boolean SAVE = false;
     private String fileName = "load.txt";
@@ -45,6 +45,8 @@ public class Game {
 
     private void operations() {
         while (true) {
+            wd.runMonster();
+            ter.renderFrame(wd.getWorld(), null);
             if (StdDraw.isMousePressed()) {
                 TETile tile = wd.getTile(new Point((int) StdDraw.mouseX(), (int) StdDraw.mouseY()));
                 drawHint(tile);
@@ -55,6 +57,16 @@ public class Game {
                 ter.renderFrame(wd.getWorld(), null);
             }
             if (SAVE) {
+                break;
+            }
+            if (gameWin) {
+                mainMenu(null);
+                StdDraw.pause(500);
+                break;
+            }
+            if (gameLose) {
+                mainMenu(null);
+                StdDraw.pause(500);
                 break;
             }
         }
@@ -86,11 +98,7 @@ public class Game {
                 wd = new World();
                 break;
             case "l":
-                try {
-                    wd = new World(fileName);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                wd = new World(fileName);
                 break;
             default:
                 System.exit(0);
@@ -115,7 +123,6 @@ public class Game {
     }
 
     private Long getSeed() {
-
         StringBuilder seed = new StringBuilder();
         String now = getUserInput();
         while (!now.equals("s")) {
@@ -123,6 +130,7 @@ public class Game {
             mainMenu(seed.toString());
             now = getUserInput();
         }
+        SEED = false;
         return Long.parseLong(seed.toString());
     }
 
@@ -130,19 +138,32 @@ public class Game {
         StdDraw.clear();
         StdDraw.clear(Color.BLACK);
 
-        // draw the main menu
+        // set the font
         Font smallFont = new Font("Monaco", Font.BOLD, 20);
         Font BigFont = new Font("Monaco", Font.BOLD, 30);
 
-        StdDraw.setFont(BigFont);
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 * 3, "CS61B: GXY's GAME");
+        if (gameWin) {
+            StdDraw.setPenColor(Color.white);
+            StdDraw.setFont(BigFont);
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Win!");
+        } else if (gameLose) {
+            StdDraw.setPenColor(Color.white);
+            StdDraw.setFont(BigFont);
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Lose!");
+        } else {
+            StdDraw.setFont(BigFont);
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 * 3, "CS61B: GXY's GAME");
 
-        StdDraw.setFont(smallFont);
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "New Game (N)");
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 1.2, "Load Game (L)");
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 2.4, "Quit (Q)");
+            StdDraw.setFont(smallFont);
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "New Game (N)");
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 1.2, "Load Game (L)");
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 2.4, "Quit (Q)");
+        }
 
-        if (SEED) { StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 + 1.5, "Please enter a seed(press S to confirm)"); }
+        if (SEED) {
+            StdDraw.setPenColor(Color.white);
+            StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 + 1.5, "Please enter a seed(Press s to confirm)");
+        }
 
         if (s != null) {
             StdDraw.setFont(smallFont);
@@ -197,11 +218,8 @@ public class Game {
             wd = new World();
         } else if (firstOption == 'l') {
             operations = input.substring(1);
-            try {
-                wd = new World(fileName);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            wd = new World(fileName);
+            System.out.println(TETile.toString(wd.getWorld()));
         } else {
             wd = null;
             operations = null;
@@ -226,13 +244,23 @@ public class Game {
     private void moveOneStep(World wd, Point newPos) {
         Point player = wd.getPlayer();
         Point lockedDoor = wd.getLockedDoor();
+        Point flower = wd.getFlower();
+        Point monster = wd.getMonster();
         if (wd.getTile(newPos).equals(Tileset.FLOOR)) {
             wd.setFloor(player);
             wd.setPlayer(newPos);
         } else if (newPos.equals(lockedDoor)) {
-            gameWin = true;
-            wd.setUnlockedDoor(newPos);
+            if (hasFlower) {
+                gameWin = true;
+                wd.setUnlockedDoor(newPos);
+                wd.setFloor(player);
+            }
+        } else if (newPos.equals(flower)) {
+            hasFlower = true;
+            wd.setPlayer(newPos);
             wd.setFloor(player);
+        } else if (newPos.equals(monster)) {
+            gameLose = true;
         }
     }
 
@@ -263,7 +291,8 @@ public class Game {
                 moveOneStep(wd, newPos);
                 break;
             case 'q':
-                InOutput.write(fileName, TETile.toString(wd.getWorld()));
+                //InOutput.write(fileName, TETile.toString(wd.getWorld()));
+                InOutput.writeObject(fileName, wd);
                 SAVE = true;
                 break;
             case ':':
