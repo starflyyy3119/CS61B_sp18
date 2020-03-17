@@ -30,7 +30,7 @@ public class World implements Serializable {
     private Point player;
     private Point lockedDoor;
     private Point flower;
-    private Point monster;
+    //private Point monster;
     // constructive code block
 //    {
 //
@@ -77,7 +77,7 @@ public class World implements Serializable {
         addFlower();
 
         // add the monster
-        addMonster();
+        // addMonster();
     }
 
     /**
@@ -91,7 +91,7 @@ public class World implements Serializable {
         player = tmp.getPlayer();
         lockedDoor = tmp.getLockedDoor();
         flower = tmp.getFlower();
-        monster = tmp.getMonster();
+        //monster = tmp.getMonster();
     }
 
     public TETile[][] getWorld() {
@@ -242,16 +242,16 @@ public class World implements Serializable {
         }
     }
 
-    private void addMonster() {
-        boolean flag = true;
-        while(flag) {
-            Point p = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
-            if (getTile(p).equals(Tileset.FLOOR)) {
-                setMonster(p);
-                flag = false;
-            }
-        }
-    }
+//    private void addMonster() {
+//        boolean flag = true;
+//        while(flag) {
+//            Point p = Point.pointGenerator(1, WIDTH - 2, 1, HEIGHT - 2);
+//            if (getTile(p).equals(Tileset.FLOOR)) {
+//                setMonster(p);
+//                flag = false;
+//            }
+//        }
+//    }
 
     private void addPlayer() {
         boolean flag = true;
@@ -292,9 +292,9 @@ public class World implements Serializable {
         return flower;
     }
 
-    public Point getMonster() {
-        return monster;
-    }
+//    public Point getMonster() {
+//        return monster;
+//    }
 
     public void setPlayer(Point pos) {
         player = pos;
@@ -306,10 +306,10 @@ public class World implements Serializable {
         world[pos.x][pos.y] = Tileset.FLOWER;
     }
 
-    public void setMonster(Point pos) {
-        monster = pos;
-        world[pos.x][pos.y] = Tileset.MONSTER;
-    }
+//    public void setMonster(Point pos) {
+//        monster = pos;
+//        world[pos.x][pos.y] = Tileset.MONSTER;
+//    }
 
     public void setFloor(Point pos) {
         world[pos.x][pos.y] = Tileset.FLOOR;
@@ -328,46 +328,46 @@ public class World implements Serializable {
         world[pos.x][pos.y] = Tileset.LOCKED_DOOR;
     }
 
-    public void runMonster() {
-        Point newPos = findNewPos();
-        if (newPos != null) {
-            setFloor(monster);
-            setMonster(newPos);
-        }
-        StdDraw.pause(100);
-    }
+//    public void runMonster() {
+//        Point newPos = findNewPos();
+//        if (newPos != null) {
+//            setFloor(monster);
+//            setMonster(newPos);
+//        }
+//        StdDraw.pause(100);
+//    }
 
-    private Point findNewPos() {
-        int tryTimes = 0;
-        Point newPos = null;
-        while (tryTimes < 10) {
-            int randNum = RandomUtils.uniform(Game.RANDOM, 4);
-
-            switch (randNum) {
-                case 0:
-                    newPos = new Point(monster.x, monster.y + 1);
-                    break;
-                case 1:
-                    newPos = new Point(monster.x, monster.y - 1);
-                    break;
-                case 2:
-                    newPos = new Point(monster.x + 1, monster.y);
-                    break;
-                default:
-                    newPos = new Point(monster.x - 1, monster.y);
-            }
-
-            if (getTile(newPos).equals(Tileset.PLAYER)) {
-                Game.gameLose = true;
-                break;
-            } else if (getTile(newPos).equals(Tileset.FLOOR)) {
-                break;
-            } else {
-                newPos = null;
-            }
-
-            tryTimes++;
-        }
-        return newPos;
-    }
+//    private Point findNewPos() {
+//        int tryTimes = 0;
+//        Point newPos = null;
+//        while (tryTimes < 10) {
+//            int randNum = RandomUtils.uniform(Game.RANDOM, 4);
+//
+//            switch (randNum) {
+//                case 0:
+//                    newPos = new Point(monster.x, monster.y + 1);
+//                    break;
+//                case 1:
+//                    newPos = new Point(monster.x, monster.y - 1);
+//                    break;
+//                case 2:
+//                    newPos = new Point(monster.x + 1, monster.y);
+//                    break;
+//                default:
+//                    newPos = new Point(monster.x - 1, monster.y);
+//            }
+//
+//            if (getTile(newPos).equals(Tileset.PLAYER)) {
+//                Game.gameLose = true;
+//                break;
+//            } else if (getTile(newPos).equals(Tileset.FLOOR)) {
+//                break;
+//            } else {
+//                newPos = null;
+//            }
+//
+//            tryTimes++;
+//        }
+//        return newPos;
+//    }
 }

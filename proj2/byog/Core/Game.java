@@ -16,12 +16,12 @@ public class Game {
 
     public static Random RANDOM;
     public static Long seedLong;
-    public  static final int CANVASHEIGHT = HEIGHT + 2;
-    private boolean hasFlower;
-    private boolean gameWin = false;
-    public static boolean gameLose = false;
-    private boolean SEED = false;
-    private boolean SAVE = false;
+    public static final int CANVASHEIGHT = HEIGHT + 2;
+    private static boolean hasFlower;
+    private static boolean gameWin = false;
+    //public static boolean gameLose = false;
+    private static boolean SEED = false;
+    private static boolean SAVE = false;
     private String fileName = "load.txt";
     private World wd;
 
@@ -45,8 +45,8 @@ public class Game {
 
     private void operations() {
         while (true) {
-            wd.runMonster();
-            ter.renderFrame(wd.getWorld(), null);
+//            wd.runMonster();
+//            ter.renderFrame(wd.getWorld(), null);
             if (StdDraw.isMousePressed()) {
                 TETile tile = wd.getTile(new Point((int) StdDraw.mouseX(), (int) StdDraw.mouseY()));
                 drawHint(tile);
@@ -64,11 +64,11 @@ public class Game {
                 StdDraw.pause(500);
                 break;
             }
-            if (gameLose) {
-                mainMenu(null);
-                StdDraw.pause(500);
-                break;
-            }
+//            if (gameLose) {
+//                mainMenu(null);
+//                StdDraw.pause(500);
+//                break;
+//            }
         }
     }
 
@@ -148,10 +148,10 @@ public class Game {
             StdDraw.setPenColor(Color.white);
             StdDraw.setFont(BigFont);
             StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Win!");
-        } else if (gameLose) {
-            StdDraw.setPenColor(Color.white);
-            StdDraw.setFont(BigFont);
-            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Lose!");
+//        } else if (gameLose) {
+//            StdDraw.setPenColor(Color.white);
+//            StdDraw.setFont(BigFont);
+//            StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Lose!");
         } else {
             StdDraw.setFont(BigFont);
             StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 * 3, "CS61B: GXY's GAME");
@@ -248,7 +248,7 @@ public class Game {
         Point player = wd.getPlayer();
         Point lockedDoor = wd.getLockedDoor();
         Point flower = wd.getFlower();
-        Point monster = wd.getMonster();
+        // Point monster = wd.getMonster();
         if (wd.getTile(newPos).equals(Tileset.FLOOR)) {
             wd.setFloor(player);
             wd.setPlayer(newPos);
@@ -262,8 +262,8 @@ public class Game {
             hasFlower = true;
             wd.setPlayer(newPos);
             wd.setFloor(player);
-        } else if (newPos.equals(monster)) {
-            gameLose = true;
+//        } else if (newPos.equals(monster)) {
+//            gameLose = true;
         }
     }
 
