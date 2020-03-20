@@ -33,13 +33,7 @@ int 的范围是 $ -2^31 - 2^31-1 $, 而本 project 要求seed 支持 9223372036
 ## Saving and loading
 先前直接使用txt文件保存需要保存的world，看到 specification 中提到的 Serialize interface, 决定尝试一下。
 
-@source:https://www.tutorialspoStdDraw.setFont(BigFont);
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 4.0 * 3, "CS61B: GXY's GAME");
-
-        StdDraw.setFont(smallFont);
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "New Game (N)");
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 1.2, "Load Game (L)");
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0 - 2.4, "Quit (Q)");int.com/java_serialization.htm
+@source:https://www.tutorialspoint.com/java/java_serialization.htm
 
 ### What is serialization?
 Java provides a mechanism, called object serialization where an object can be represented as a sequence of bytes that includes the object's data as well as information about the object's type and the types of data stored in the object.
