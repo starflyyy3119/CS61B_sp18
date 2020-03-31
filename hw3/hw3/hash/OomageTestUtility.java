@@ -19,7 +19,9 @@ public class OomageTestUtility {
             buckets[index]++;
         }
         for (int i = 0; i < M; i++) {
-            if (buckets[i] > N / 2.5 || buckets[i] < N / 50) { return false; }
+            if (buckets[i] > N / 2.5 || buckets[i] < N / 50) {
+                return false;
+            }
         }
         return true;
     }
