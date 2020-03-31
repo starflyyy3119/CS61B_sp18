@@ -14,10 +14,9 @@ public class SimpleOomage implements Oomage {
 
     @Override
     public boolean equals(Object o) {
-        // TODO: Write this method.
-        if (this == o) return true;
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
+        if (this == o) { return true; }
+        if (o == null) { return false; }
+        if (this.getClass() != o.getClass()) { return false; }
 
         SimpleOomage that = (SimpleOomage) o;
         return this.red == that.red && this.green == that.green && this.blue == that.blue;
@@ -26,15 +25,14 @@ public class SimpleOomage implements Oomage {
     /* Uncomment this method after you've written
        equals and failed the testHashCodeAndEqualsConsistency
        test.*/
-    /* It is generally necessary to override the hashCode method whenever the equals method is overridden,
-    * so as to maintain the general contract for the hashCode method, which states that the equal objects
-    * must have equal hash codes. */
+    /* It is generally necessary to override the hashCode method whenever the
+    equals method is overridden,so as to maintain the general contract for the
+    hashCode method, which states that the equal objectsmust have equal hash codes. */
     @Override
     public int hashCode() {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
-            // TODO: Write a perfect hash function for Simple Oomages.
             return red / 5 + green / 5 * 256 + blue / 5 * 256 * 256;
         }
     }
