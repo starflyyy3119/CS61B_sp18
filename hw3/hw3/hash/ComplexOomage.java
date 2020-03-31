@@ -16,7 +16,6 @@ public class ComplexOomage implements Oomage {
             total = total * 256;
             total = total + x;
         }
-        System.out.println("Total = " + total);
         return total;
     }
 
