@@ -6,7 +6,9 @@ public class PercolationStats {
     private double[] dat;
     // perform T independent experiments on an N-by-N grid
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if (N <= 0 || T <= 0) { throw new IllegalArgumentException(); }
+        if (N <= 0 || T <= 0) {
+            throw new IllegalArgumentException(); 
+        }
 
         dat = new double[T];
 
