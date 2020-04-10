@@ -16,7 +16,7 @@ public class Percolation {
 
     // create N-by-N grid, with all sites initially blocked
     public Percolation(int N) {
-        if (N <= 0) throw new IllegalArgumentException();
+        if (N <= 0) { throw new IllegalArgumentException(); }
 
         // initialize N
         this.N = N;
@@ -49,14 +49,14 @@ public class Percolation {
             }
 
             // if belongs to the last layer
-            if (row == N - 1) uf.union(mapping(row, col), N * N + 1);
+            if (row == N - 1) { uf.union(mapping(row, col), N * N + 1); }
         }
 
         // expand to left, right, up and down
-        if (col - 1 >= 0 && marked[row][col - 1]) doUF(row, col, row, col - 1);
-        if (col + 1 < N  && marked[row][col + 1]) doUF(row, col, row, col + 1);
-        if (row - 1 >= 0 && marked[row - 1][col]) doUF(row, col, row - 1, col);
-        if (row + 1 < N  && marked[row + 1][col]) doUF(row, col, row + 1, col);
+        if (col - 1 >= 0 && marked[row][col - 1]) { doUF(row, col, row, col - 1); }
+        if (col + 1 < N  && marked[row][col + 1]) { doUF(row, col, row, col + 1); }
+        if (row - 1 >= 0 && marked[row - 1][col]) { doUF(row, col, row - 1, col); }
+        if (row + 1 < N  && marked[row + 1][col]) { doUF(row, col, row + 1, col); }
     }
 
     // is the site (row, col) open?
@@ -85,7 +85,7 @@ public class Percolation {
 
     // assert (row, col) isValid
     private void assertValid(int row, int col) {
-        if (row < 0 || row > N - 1 || col < 0 || col > N - 1) throw new IndexOutOfBoundsException();
+        if (row < 0 || row > N - 1 || col < 0 || col > N - 1) { throw new IndexOutOfBoundsException(); }
     }
 
     // map the 2D-(row, col) to 1D-index
@@ -97,5 +97,10 @@ public class Percolation {
     private void doUF(int row1, int col1, int row2, int col2) {
         uf.union(mapping(row1, col1), mapping(row2, col2));
         ufHelper.union(mapping(row1, col1), mapping(row2, col2));
+    }
+
+    // unit test
+    public static void main(String[] args) {
+
     }
 }

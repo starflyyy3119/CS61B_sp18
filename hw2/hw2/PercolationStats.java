@@ -3,17 +3,17 @@ package hw2;
 import edu.princeton.cs.introcs.StdRandom;
 
 public class PercolationStats {
-    double[] dat;
+    private double[] dat;
     // perform T independent experiments on an N-by-N grid
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if (N <= 0 || T <= 0) throw new IllegalArgumentException();
+        if (N <= 0 || T <= 0) { throw new IllegalArgumentException(); }
 
         dat = new double[T];
 
         for (int i = 0; i < T; i++) {
             Percolation p = pf.make(N);
             while (!p.percolates()) {
-                p.open(StdRandom.uniform(0, N), StdRandom.uniform(0 ,N));
+                p.open(StdRandom.uniform(0, N), StdRandom.uniform(0, N));
             }
             dat[i] = (double) p.numberOfOpenSites() / (N * N);
         }
@@ -46,11 +46,5 @@ public class PercolationStats {
     // high endpoint of 95% confidence interval
     public double confidenceHigh() {
         return mean() + (1.96 * stddev()) / Math.sqrt(dat.length);
-    }
-
-    public static void main(String[] args) {
-        PercolationStats ps = new PercolationStats(10, 1000, new PercolationFactory());
-        System.out.println(ps.mean());
-        System.out.println("[" + ps.confidenceLow() + "," + ps.confidenceHigh() + "]");
     }
 }
